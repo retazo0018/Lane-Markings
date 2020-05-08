@@ -1,0 +1,28 @@
+Edge in a image is where there is sharp change in intensity/color between adj pixels in a image
+
+Step 1: Convert image to Gray scale
+
+Step 2: Reduce Noise
+	To accurately calculate edges and edge detection. Thus smoothening the image. Done by Gaussian filter.
+
+Step 3: Perform Canny function on image
+	Canny function performs derivative of f(x,y) where x is number of columns in image array and y being rows in the image array.
+	Measures adjacent changes in intensity in all directions. Derivative gives the gradiant(change in brightness in series of pixels) therefore we can identify strongest gradients(series of white pixels).
+
+Step 4: perform Hough transform to identify lane lines basically to find straight lines
+	Code Explanation:
+		lines = cv2.HoughLinesP(cropped_image, 2, np.pi/180, 100, np.array([]), minLineLength=40, maxLineGap=5)
+
+		2nd, 3rd arguements - resolution of hough accumulator array.(grids in explanation). Basically the size of bins.
+		2nd - distance resolution, a precision of 2 pixels in our case 
+		3rd - angle resolution, 1 degree precision, we need in radians so np.pi/180.
+		Larger the bins smaller the resolution.
+		4th - Threshold (minimum number of votes needed to accept a candidate line).
+		5th - just a placeholder array.
+		6th - length of line in pixels which we accept.
+		7th - maximum distance between segmented lines which we allow to be connected to single line.
+
+Step 5: Optimization
+	Lines on left will have a negative slope, slanted towards right(m<0)
+	Lines on right will have a positive slope, slanted towards left	(m>0)
+	Take the average value across left coords and right coords to smoothen the lane line.
